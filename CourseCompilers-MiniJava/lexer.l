@@ -32,5 +32,6 @@ letter        [a-zA-Z]
 {digit}+  { yylval.ival = atoi( yytext ); return INTEGER_LITERAL; }
 \&\&|<|\+|-|\*	{ return yytext[0]; }
 (\/\/.*\n)|(\/\*.*\*\/)	{ return COMMENT; }
-
+"int" { return INT; }
 %%
+
