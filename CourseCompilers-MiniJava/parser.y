@@ -55,6 +55,9 @@ void yyerror( int*, const char* );
 %token RETURN
 %token INT
 %type<CProgram> Program
+%type<CStatement> Statement
+%type< CStar<CStatement> > Statements
+%type<CExp> Exp
 /* Связываем тип из union и символ парсера. */
 
 /* Секция с описанием правил парсера. */
@@ -119,20 +122,20 @@ Type:
 	| ID {}
 	;
 Statement:
-	'{'Statement'}' {}
-	| IF '(' Exp ')' Statement ELSE Statement {}
-	| WHILE '(' Exp ')' Statement {}
-	| PRINTLN '(' Exp ')'';' {}
-	| ID '=' Exp ';' {}
-	| ID '['Exp']' '=' Exp ';' {}
+	'{'Statement'}' {$$ = new CStatementBRACKETS($1); }
+	| IF '(' Exp ')' Statement ELSE Statement { $$ = new CStatementIF($3,$5,$7); }
+	| WHILE '(' Exp ')' Statement { $$ = new CStatementWHILE($3,$5); }
+	| PRINTLN '(' Exp ')'';' {$$ = new CStatementPRINTLN($3); }
+	| ID '=' Exp ';' { $$ = new CStatementASIGNMENT($1,$3); }
+	| ID '['Exp']' '=' Exp ';' { $$ = new CStatementSQUEREASIGNMENT($1,$3,$6); }
 	;
 Exp:
-	Exp '+' Exp {}
-	| Exp '-' Exp {}
-	| Exp '*' Exp {}
+	Exp '+' Exp { $$ = new CExpBinary($1,'+', $3); }
+	| Exp '-' Exp { $$ = new CExpBinary($1,'-', $3); }
+	| Exp '*' Exp { $$ = new CExpBinary($1,'*', $3); }
 	| '-' Exp %prec UMINUS {}
-	| Exp '&' '&' Exp {}
-	| Exp '<' Exp {}
+	| Exp '&' '&' Exp { $$ = new CExpBinary($1,'&', $4); }
+	| Exp '<' Exp { $$ = new CExpBinary($1,'+', $3); }
 	| Exp '[' Exp ']' {}
 	| Exp'.' LENGTH {}
 	| Exp '.' ID '(' ExpList ')' {}
