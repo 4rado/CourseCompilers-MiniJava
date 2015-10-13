@@ -15,23 +15,25 @@ letter        [a-zA-Z]
 "static" { return STATIC; }
 "void" { return VOID; }
 "main" { return MAIN; }
-"string" { return STRING; }
+"String" { return STRING; }
 "extends" { return EXTENDS; }
 "return" { return RETURN; }
 "boolean" {return BOOLEAN; }
 "if" {return IF; }
 "else" {return ELSE; }
-"while " {return WHILE; }
-"System.out.printLn" { return PRINTLN; }
+"while" {return WHILE; }
+"System.out.println" { return PRINTLN; }
 "length" {return LENGTH; }
 "true" {return TRUE; }
 "false" {return FALSE; }
 "this" {return THIS; }
 "new" {return NEW; }
+"int" { return INT; }
 {letter}+({letter}|{digit}|\_)*		{ strcpy_s(yylval.sval, yytext); return ID; }
 {digit}+  { yylval.ival = atoi( yytext ); return INTEGER_LITERAL; }
-\&\&|<|\+|-|\*	{ return yytext[0]; }
+[\&\<\+\-\*\{\}\(\)\[\]\.\;\=]	{ return yytext[0]; }
 (\/\/.*\n)|(\/\*.*\*\/)	{ return COMMENT; }
-"int" { return INT; }
+[\t\r\n\ ]+ {}
+
 %%
 

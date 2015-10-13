@@ -1,14 +1,13 @@
-﻿Build started 06.10.2015 16:52:40.
-     1>Project "C:\Users\acerPC\Documents\GitHub\CourseCompilers-MiniJava\CourseCompilers-MiniJava\CourseCompilers-MiniJava.vcxproj" on node 2 (Build target(s)).
+﻿Build started 13.10.2015 13:18:07.
+     1>Project "C:\Users\acerPC\Documents\GitHub\CourseCompilers-MiniJava\CourseCompilers-MiniJava\CourseCompilers-MiniJava.vcxproj" on node 2 (Rebuild target(s)).
      1>CustomBuild:
+         Compiling flex
          Compiling bison
-         parser.y: conflicts: 28 shift/reduce
        ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt lexer.cpp parser.tab.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _CRT_SECURE_NO_WARNINGS /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt lexer.cpp main.cpp parser.tab.cpp
          parser.tab.cpp
-     1>c:\users\acerpc\documents\github\coursecompilers-minijava\coursecompilers-minijava\parser.tab.cpp(1250): warning C4065: switch statement contains 'default' but no 'case' labels
-         Generating Code...
-         Compiling...
+     1>c:\users\acerpc\documents\github\coursecompilers-minijava\coursecompilers-minijava\parser.tab.cpp(1254): warning C4065: switch statement contains 'default' but no 'case' labels
+         main.cpp
          lexer.cpp
          Generating Code...
        Link:
@@ -16,8 +15,8 @@
          Debug\main.obj
          Debug\parser.tab.obj
          CourseCompilers-MiniJava.vcxproj -> C:\Users\acerPC\Documents\GitHub\CourseCompilers-MiniJava\Debug\CourseCompilers-MiniJava.exe
-     1>Done Building Project "C:\Users\acerPC\Documents\GitHub\CourseCompilers-MiniJava\CourseCompilers-MiniJava\CourseCompilers-MiniJava.vcxproj" (Build target(s)).
+     1>Done Building Project "C:\Users\acerPC\Documents\GitHub\CourseCompilers-MiniJava\CourseCompilers-MiniJava\CourseCompilers-MiniJava.vcxproj" (Rebuild target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:01.08
+Time Elapsed 00:00:01.79

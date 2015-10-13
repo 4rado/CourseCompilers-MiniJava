@@ -16,17 +16,19 @@ void yyerror( int*, const char* );
 %union{
 	int ival;
 	char sval[255];
+	CProgram* program;
 }
 
 /* Определение лево-ассоцитивности. Аналогично есть %right.
 Порядок объявление важен - чем позже объявлен оператор, тем больше его приоритет.
 В данном случае оба оператора лево-ассоциативные, но - имеет более высокий приоритет, чем & и |. */
-%left '<'
-%left '-' '+'
+%left '+' '-'
 %left '*'
 %left UMINUS
-%left '&'
-%left '[' ']' '.'
+%left '[' ']'
+%left '(' ')'
+%left '.'
+%left '!' '&' '<'
 
 /* Определение токенов. Можно задать ассоциируемый с токеном тип из Union. */
 %token<ival> INTEGER_LITERAL
@@ -52,51 +54,63 @@ void yyerror( int*, const char* );
 %token NEW 
 %token RETURN
 %token INT
+%type<CProgram> Program
 /* Связываем тип из union и символ парсера. */
 
 /* Секция с описанием правил парсера. */
 %%
 Program:
 	MainClass {}
-	| MainClass ClassDecls {}
+	| MainClass ClassDecls {$$ = new CProgram( $1, $2 ); }
 	;
-
 ClassDecls:
-	ClassDecl {}
-	| ClassDecls ClassDecl {}
+	ClassDecl { $$ = new CClassDecls($1); }
+	| ClassDecls ClassDecl { $1->addNext($2); }
 	;
-
 MainClass:
-	CLASS ID '{' PUBLIC STATIC VOID MAIN '(' STRING '['']' ID  '{' Statement '}' '}' {}
+	CLASS ID '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' ID ')' '{' Statement '}' '}' {}
 	;
 ClassDecl:
-	CLASS ID '{'VarDecl MethodDecl'}' {}
-	| CLASS ID '{'VarDecl'}' {}
-	| CLASS ID '{'MethodDecl'}' {}
+	CLASS ID '{'VarDecls MethodDecls'}' {}
+	| CLASS ID '{'VarDecls'}' {}
+	| CLASS ID '{'MethodDecls'}' {}
 	| CLASS ID '{''}' {}
-	| CLASS ID EXTENDS ID '{'VarDecl MethodDecl'}' {}
-	| CLASS ID EXTENDS ID '{'VarDecl'}' {}
-	| CLASS ID EXTENDS ID '{'MethodDecl'}' {}
+	| CLASS ID EXTENDS ID '{'VarDecls MethodDecls'}' {}
+	| CLASS ID EXTENDS ID '{'VarDecls'}' {}
+	| CLASS ID EXTENDS ID '{'MethodDecls'}' {}
 	| CLASS ID EXTENDS ID '{''}' {}
 	;
+VarDecls:
+	VarDecl {}
+	| VarDecls VarDecl {}
+	;
+MethodDecls:
+    MethodDecl {} 
+	| MethodDecls MethodDecl {}
+	;
 VarDecl:
-	Type ID {}
-	| VarDecl VarDecl {}
+	Type ID ';' {}
 	;
 MethodDecl:
-	PUBLIC Type ID '(' FormalList  ')' '{'VarDecl Statement RETURN Exp ';''}' {}
-	| PUBLIC Type ID '(' FormalList  ')' '{'VarDecl RETURN Exp ';''}' {}
-	| PUBLIC Type ID '(' FormalList  ')' '{' Statement RETURN Exp ';''}' {}
-	| PUBLIC Type ID '(' FormalList  ')' '{' RETURN Exp ';''}' {}
-	| MethodDecl MethodDecl {}
+	PUBLIC Type ID '(' FormalList  ')' '{' VarDecls Statements RETURN Exp ';' '}' {}
+	| PUBLIC Type ID '(' FormalList  ')' '{' VarDecls RETURN Exp ';' '}' {}
+	| PUBLIC Type ID '(' FormalList  ')' '{' Statements RETURN Exp ';' '}' {}
+	| PUBLIC Type ID '(' FormalList  ')' '{' RETURN Exp ';' '}' {}
+	;
+Statements:
+	Statement {}
+	| Statements Statement {}
 	;
 FormalList:
-	Type ID FormalRest {}
+	Type ID FormalRests {}
 	| Type ID {}
+	;
+FormalRests:
+	FormalRest {}
+	| FormalRests FormalRest {}
 	;
 FormalRest:
 	',' Type ID {}
-	| FormalRest FormalRest {}
 	;
 Type:
 	INT '['']' {}
@@ -105,13 +119,12 @@ Type:
 	| ID {}
 	;
 Statement:
-	Statement Statement {}
-	| '{'Statement'}' {}
+	'{'Statement'}' {}
 	| IF '(' Exp ')' Statement ELSE Statement {}
 	| WHILE '(' Exp ')' Statement {}
 	| PRINTLN '(' Exp ')'';' {}
-	| ID '=' Exp ';'
-	| ID '['Exp']' '=' Exp ';'
+	| ID '=' Exp ';' {}
+	| ID '['Exp']' '=' Exp ';' {}
 	;
 Exp:
 	Exp '+' Exp {}
@@ -128,18 +141,20 @@ Exp:
 	| FALSE {}
 	| ID {}
 	| THIS {}
-	| NEW INT '['Exp']' {}
-	| NEW ID '('')' {}
+	| NEW INT '[' Exp ']' {}
+	| NEW ID '(' ')' {}
 	| '!' Exp {}
-	| '('Exp')' {}
+	| '(' Exp ')' {}
 	;
 ExpList:
-	Exp ExpRest {}
+	Exp ExpRests {}
 	| Exp {}
 	;
+ExpRests:
+	ExpRest {}
+	| ExpRests ExpRest {} 
 ExpRest:
 	',' Exp {}
-	| ExpRest ExpRest {}
 	;
 %%
 /* Функция обработки ошибки. */
