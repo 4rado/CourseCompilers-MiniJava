@@ -35,5 +35,11 @@
     <ClInclude Include="parser.tab.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Visitor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
